@@ -1,0 +1,4 @@
+faker
+psycopg2-binary
+SQLAlchemy-Utils<0.38.0
+tenacity>=8.0.0

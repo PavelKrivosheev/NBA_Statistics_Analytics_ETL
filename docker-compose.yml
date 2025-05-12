@@ -1,0 +1,116 @@
+services:
+  postgres_db1:
+    image: postgres:latest
+    container_name: nba_stats
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: nba_stats
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_nba_stats:/var/lib/postgresql/data
+    networks:
+      - airflow-network
+
+  postgres_airflow:
+    image: postgres:latest
+    container_name: postgres_airflow
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data_airflow:/var/lib/postgresql/data
+    networks:
+      - airflow-network	
+
+  airflow:
+    image: apache/airflow:2.5.0
+    container_name: airflow
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow_db
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=my_secret_key
+      - AIRFLOW__WEBSERVER__RBAC=True
+      - AIRFLOW__WEBSERVER__WORKERS=4
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./requirements.txt:/requirements.txt
+      - /Q/DE01/ДАННЫЕ ДЛЯ ПРОЕКТА/DB_sql:/opt/airflow/data
+      - /Q/DE01/ДАННЫЕ ДЛЯ ПРОЕКТА/NBA_SHOTS:/opt/airflow/data/csv	
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_airflow
+    entrypoint: /bin/bash -c "pip install --no-cache-dir -r /requirements.txt && exec airflow standalone"
+    command: ["webserver"]
+    networks:
+      - airflow-network		
+
+  airflow_scheduler:
+    image: apache/airflow:2.5.0
+    container_name: airflow_scheduler
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow_db
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__WEBSERVER__SECRET_KEY=my_secret_key
+      - AIRFLOW__WEBSERVER__RBAC=True
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/lo
+      - ./requirements.txt:/requirements.txt
+      - /Q/DE01/ДАННЫЕ ДЛЯ ПРОЕКТА/DB_sql:/opt/airflow/data
+      - /Q/DE01/ДАННЫЕ ДЛЯ ПРОЕКТА/NBA_SHOTS:/opt/airflow/data/csv
+    depends_on:
+      - postgres_airflow
+    entrypoint: /bin/bash -c "pip install --no-cache-dir -r /requirements.txt && exec airflow scheduler"
+    command: ["scheduler"]
+    networks:
+      - airflow-network	
+
+  postgres_metabase:
+    image: postgres:latest
+    container_name: postgres_metabase
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: metabase_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data_metabase:/var/lib/postgresql/data
+    networks:
+      - airflow-network	
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase_db
+      MB_DB_PORT: 5432
+      MB_DB_USER: admin
+      MB_DB_PASS: admin
+      MB_DB_HOST: postgres_metabase
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres_metabase
+    restart: unless-stopped
+    networks:
+      - airflow-network
+
+networks:
+  airflow-network:
+    driver: bridge
+
+volumes:
+  postgres_nba_stats:
+  postgres_data_airflow:
+  postgres_data_metabase:
