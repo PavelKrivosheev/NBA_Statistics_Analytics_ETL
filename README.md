@@ -59,12 +59,12 @@
 │   ├── dag_load_incremental_shot_data.py       # 🏀 Данные о бросках
 │   ├── dag_load_dds.py                # 🗂️ Слой DDS
 │   ├── dag_data_marts.py              # 📊 Витрины данных
-│   ├── load_static_tables.py          # 🗄️ Загрузка статических таблиц
-│   ├── load_incremental_game.py       # 🎮 Загрузка игр
-│   ├── load_incremental_line_score_game.py  # 🕒 Загрузка счёта
-│   ├── load_incremental_shot_data.py  # 🏀 Загрузка бросков
-│   ├── load_dds_tables.py             # 🗂️ Загрузка DDS
-│   ├── load_data_marts.py             # 📊 Построение витрин
+│   ├── load_static_tables.py         
+│   ├── load_incremental_game.py       
+│   ├── load_incremental_line_score_game.py  
+│   ├── load_incremental_shot_data.py 
+│   ├── load_dds_tables.py            
+│   ├── load_data_marts.py             
 ├── 🐳 docker-compose.yml              
 ├── 📖 README.md                       
 ```
