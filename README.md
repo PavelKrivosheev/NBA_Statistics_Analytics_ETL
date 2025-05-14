@@ -51,30 +51,22 @@
 
 ## 📂 Структура проекта
 ```
-nba_stats_pipeline/
-├── dags/
-│   ├── dag_load_static.py
-│   ├── dag_load_incremental_game.py
-│   ├── dag_load_incremental_line_score_game.py
-│   ├── dag_load_incremental_shot_data.py
-│   ├── dag_load_dds.py
-│   ├── dag_data_marts.py
-├── scripts/
-│   ├── load_static_tables.py
-│   ├── load_incremental_game.py
-│   ├── load_incremental_line_score_game.py
-│   ├── load_incremental_shot_data.py
-│   ├── load_dds_tables.py
-│   ├── load_data_marts.py
-├── data/
-│   ├── nba.sqlite
-│   ├── csv/
-│   │   ├── NBA_2010_Shots.csv
-│   │   ├── ...
-├── logs/
-├── docker-compose.yml
-├── requirements.txt
-├── README.md
+🏠 dockercompose/                  
+├── 🌬️ dags/                           
+│   ├── dag_load_static.py             # 🗄️ Статические таблицы
+│   ├── dag_load_incremental_game.py   # 🎮 Данные об играх
+│   ├── dag_load_incremental_line_score_game.py  # 🕒 Счёт по четвертям
+│   ├── dag_load_incremental_shot_data.py       # 🏀 Данные о бросках
+│   ├── dag_load_dds.py                # 🗂️ Слой DDS
+│   ├── dag_data_marts.py              # 📊 Витрины данных
+│   ├── load_static_tables.py          # 🗄️ Загрузка статических таблиц
+│   ├── load_incremental_game.py       # 🎮 Загрузка игр
+│   ├── load_incremental_line_score_game.py  # 🕒 Загрузка счёта
+│   ├── load_incremental_shot_data.py  # 🏀 Загрузка бросков
+│   ├── load_dds_tables.py             # 🗂️ Загрузка DDS
+│   ├── load_data_marts.py             # 📊 Построение витрин
+├── 🐳 docker-compose.yml              
+├── 📖 README.md                       
 ```
 
 ## 🏀 Запуск пайплайна
